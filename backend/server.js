@@ -33,16 +33,21 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// MongoDB Connection (Updated for MongoDB Atlas & Live deployment with timeout fixes)
-mongoose.set('bufferCommands', false);
-const MONGO_URI = process.env.MONGO_URI;
+// MongoDB Connection (Proper async connection to handle cold starts smoothly)
+const connectDB = async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_URI, {
+            serverSelectionTimeoutMS: 30000,
+            socketTimeoutMS: 45000,
+        });
+        console.log('MongoDB Connected Successfully');
+    } catch (err) {
+        console.log('MongoDB Connection Error: ', err);
+        process.exit(1);
+    }
+};
 
-mongoose.connect(MONGO_URI, {
-    serverSelectionTimeoutMS: 30000, // 30 seconds wait for cold start
-    socketTimeoutMS: 45000,
-})
-.then(() => console.log('MongoDB Connected Successfully'))
-.catch((err) => console.log('MongoDB Connection Error: ', err));
+connectDB();
 
 // Schemas & Models
 const userSchema = new mongoose.Schema({
