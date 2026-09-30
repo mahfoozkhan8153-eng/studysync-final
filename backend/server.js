@@ -33,10 +33,14 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// MongoDB Connection (Using Local MongoDB to avoid network/DNS blocking issues)
-const MONGO_URI = "mongodb://localhost:27017/studysync";
+// MongoDB Connection (Updated for MongoDB Atlas & Live deployment with timeout fixes)
+mongoose.set('bufferCommands', false);
+const MONGO_URI = process.env.MONGO_URI;
 
-mongoose.connect(MONGO_URI)
+mongoose.connect(MONGO_URI, {
+    serverSelectionTimeoutMS: 30000, // 30 seconds wait for cold start
+    socketTimeoutMS: 45000,
+})
 .then(() => console.log('MongoDB Connected Successfully'))
 .catch((err) => console.log('MongoDB Connection Error: ', err));
 
@@ -132,21 +136,17 @@ io.on('connection', (socket) => {
         socket.join(roomCode);
         console.log(`User with ID: ${socket.id} joined room: ${roomCode}`);
 
-        // Jab bhi koi user room join kare, use us room ki purani saari files bhej do
         if (roomFiles[roomCode] && roomFiles[roomCode].length > 0) {
             socket.emit('load_history_files', roomFiles[roomCode]);
         }
     });
 
-    // File upload event handle karna aur room ke baaki users ko broadcast karna
     socket.on('upload_file_event', (data) => {
         const { roomCode, fileData } = data;
         if (!roomFiles[roomCode]) {
             roomFiles[roomCode] = [];
         }
         roomFiles[roomCode].push(fileData);
-
-        // Room ke baaki sabhi users ko real-time file bhejna
         socket.to(roomCode).emit('receive_file', fileData);
     });
 
