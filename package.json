@@ -5,8 +5,9 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^7.18.4",
     "react-scripts": "5.0.1",
-    "socket.io-client": "^4.7.2"
+    "socket.io-client": "^4.8.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -15,7 +16,15 @@
     "eject": "react-scripts eject"
   },
   "browserslist": {
-    "production": [">0.2%", "not dead", "not op_mini all"],
-    "development": ["last 1 chrome version", "last 2 firefox version", "last 3 safari version"]
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 2 firefox version",
+      "last 3 safari version"
+    ]
   }
 }
