@@ -69,7 +69,13 @@ export default function App() {
   const fetchRooms = async () => {
     try {
       const res = await fetch(`${BACKEND_URL}/api/rooms`);
-      const data = await res.json();
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (err) {
+        return; // Server is waking up, ignore fetch error gracefully
+      }
       if (Array.isArray(data)) setActiveRooms(data);
     } catch (err) {
       console.error('Error fetching rooms:', err);
@@ -86,7 +92,15 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })
       });
-      const data = await res.json();
+      
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (err) {
+        throw new Error('Server is waking up from sleep. Please try again in 30 seconds.');
+      }
+
       if (!res.ok) throw new Error(data.error || 'Registration failed');
       setAuthSuccess('Account created successfully! Please sign in.');
       setAuthMode('login');
@@ -104,7 +118,15 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
-      const data = await res.json();
+      
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (err) {
+        throw new Error('Server is waking up from sleep. Please try again in 30 seconds.');
+      }
+
       if (!res.ok) throw new Error(data.error || 'Invalid credentials');
       setCurrentUser({ name: data.name, email: data.email });
       setView('dashboard');
