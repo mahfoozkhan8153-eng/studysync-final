@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 
-const BACKEND_URL = 'http://localhost:5000';
+const BACKEND_URL = 'https://studysync-final.onrender.com';
 let socket;
 
 export default function App() {
@@ -497,7 +497,7 @@ export default function App() {
               {filesList.length === 0 ? (
                 <div className="h-40 flex items-center justify-center text-slate-500 text-xs border border-dashed border-slate-800 rounded-xl">No files uploaded yet. Be the first to share resources!</div>
               ) : (
-                filesList.map((f, i) => (
+                filesList.files?.map ? null : filesList.map((f, i) => (
                   <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
                     <span className="text-xs font-semibold text-slate-200">{f.name}</span>
                     <a href={f.url} target="_blank" rel="noreferrer" className="px-3 py-1.5 bg-amber-500/10 text-amber-400 hover:bg-amber-500 hover:text-slate-950 text-xs font-bold rounded-lg border border-amber-500/20 transition-all">
