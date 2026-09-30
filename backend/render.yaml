@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: studysync-final
+    env: node
+    region: singapore
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
